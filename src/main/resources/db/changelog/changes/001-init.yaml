@@ -1,0 +1,325 @@
+databaseChangeLog:
+- changeSet:
+    id: 001-init
+    author: liem
+    changes:
+    - createSequence:
+        incrementBy: 50
+        sequenceName: asset_accident_log_seq
+        startValue: 1
+    - createSequence:
+        incrementBy: 50
+        sequenceName: asset_maintenance_log_seq
+        startValue: 1
+    - createSequence:
+        incrementBy: 50
+        sequenceName: asset_seq
+        startValue: 1
+    - createSequence:
+        incrementBy: 50
+        sequenceName: asset_usage_log_seq
+        startValue: 1
+    - createSequence:
+        incrementBy: 50
+        sequenceName: department_seq
+        startValue: 1
+    - createSequence:
+        incrementBy: 50
+        sequenceName: request_seq
+        startValue: 1
+    - createSequence:
+        incrementBy: 50
+        sequenceName: user_seq
+        startValue: 1
+    - createTable:
+        tableName: department
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: departmentPK
+            name: id
+            type: INTEGER
+        - column:
+            name: created_at
+            type: TIMESTAMP(6) WITHOUT TIME ZONE
+        - column:
+            name: updated_at
+            type: TIMESTAMP(6) WITHOUT TIME ZONE
+        - column:
+            name: name
+            type: VARCHAR(255)
+    - createTable:
+        tableName: user
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: userPK
+            name: id
+            type: INTEGER
+        - column:
+            name: created_at
+            type: TIMESTAMP(6) WITHOUT TIME ZONE
+        - column:
+            name: updated_at
+            type: TIMESTAMP(6) WITHOUT TIME ZONE
+        - column:
+            name: avatar_key
+            type: VARCHAR(255)
+        - column:
+            name: password
+            type: VARCHAR(255)
+        - column:
+            name: roles
+            type: VARCHAR(255)
+        - column:
+            name: user_name
+            type: VARCHAR(255)
+    - createTable:
+        tableName: asset
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: assetPK
+            name: id
+            type: INTEGER
+        - column:
+            name: created_at
+            type: TIMESTAMP(6) WITHOUT TIME ZONE
+        - column:
+            name: updated_at
+            type: TIMESTAMP(6) WITHOUT TIME ZONE
+        - column:
+            name: description
+            type: VARCHAR(255)
+        - column:
+            name: image_keys
+            type: VARCHAR(255)
+        - column:
+            name: location
+            type: VARCHAR(255)
+        - column:
+            name: name
+            type: VARCHAR(255)
+        - column:
+            name: purchase_date
+            type: TIMESTAMP(6) WITHOUT TIME ZONE
+        - column:
+            name: value
+            type: FLOAT(53)
+        - column:
+            constraints:
+              nullable: false
+            name: department_id
+            type: INTEGER
+    - createTable:
+        tableName: asset_accident_log
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: asset_accident_logPK
+            name: id
+            type: INTEGER
+        - column:
+            name: created_at
+            type: TIMESTAMP(6) WITHOUT TIME ZONE
+        - column:
+            name: updated_at
+            type: TIMESTAMP(6) WITHOUT TIME ZONE
+        - column:
+            name: description
+            type: VARCHAR(255)
+        - column:
+            name: title
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: asset_id
+            type: INTEGER
+    - createTable:
+        tableName: asset_maintenance_log
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: asset_maintenance_logPK
+            name: id
+            type: INTEGER
+        - column:
+            name: created_at
+            type: TIMESTAMP(6) WITHOUT TIME ZONE
+        - column:
+            name: updated_at
+            type: TIMESTAMP(6) WITHOUT TIME ZONE
+        - column:
+            name: cost
+            type: FLOAT(53)
+        - column:
+            name: description
+            type: VARCHAR(255)
+        - column:
+            name: maintenance_date
+            type: TIMESTAMP(6) WITHOUT TIME ZONE
+        - column:
+            name: performed_by
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: asset_id
+            type: INTEGER
+    - createTable:
+        tableName: asset_usage_log
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: asset_usage_logPK
+            name: id
+            type: INTEGER
+        - column:
+            name: created_at
+            type: TIMESTAMP(6) WITHOUT TIME ZONE
+        - column:
+            name: updated_at
+            type: TIMESTAMP(6) WITHOUT TIME ZONE
+        - column:
+            name: approval_notes
+            type: VARCHAR(255)
+        - column:
+            name: approval_status
+            type: VARCHAR(255)
+        - column:
+            name: begin_time
+            type: TIMESTAMP(6) WITHOUT TIME ZONE
+        - column:
+            name: end_time
+            type: TIMESTAMP(6) WITHOUT TIME ZONE
+        - column:
+            name: notes
+            type: VARCHAR(255)
+        - column:
+            constraints:
+              nullable: false
+            name: approved_by_id
+            type: INTEGER
+        - column:
+            constraints:
+              nullable: false
+            name: asset_id
+            type: INTEGER
+    - createTable:
+        tableName: asset_usage_log_user
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: asset_usage_log_id
+            type: INTEGER
+        - column:
+            constraints:
+              nullable: false
+            name: user_id
+            type: INTEGER
+    - createTable:
+        tableName: request
+        columns:
+        - column:
+            autoIncrement: true
+            constraints:
+              nullable: false
+              primaryKey: true
+              primaryKeyName: requestPK
+            name: id
+            type: INTEGER
+        - column:
+            name: created_at
+            type: TIMESTAMP(6) WITHOUT TIME ZONE
+        - column:
+            name: updated_at
+            type: TIMESTAMP(6) WITHOUT TIME ZONE
+        - column:
+            name: description
+            type: VARCHAR(255)
+        - column:
+            name: title
+            type: VARCHAR(255)
+    - addForeignKeyConstraint:
+        baseColumnNames: department_id
+        baseTableName: asset
+        constraintName: FKnpe7x7oel7k7arlms8bb94rnx
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: department
+        validate: true
+    - addForeignKeyConstraint:
+        baseColumnNames: asset_id
+        baseTableName: asset_accident_log
+        constraintName: FKraybvt27xpmmdfivlamsomsxc
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: asset
+        validate: true
+    - addForeignKeyConstraint:
+        baseColumnNames: asset_id
+        baseTableName: asset_maintenance_log
+        constraintName: FKluokadoqca0s3c9e753anyi9a
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: asset
+        validate: true
+    - addForeignKeyConstraint:
+        baseColumnNames: asset_id
+        baseTableName: asset_usage_log
+        constraintName: FK9j22p13bmqmiug8s5dhmx9m74
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: asset
+        validate: true
+    - addForeignKeyConstraint:
+        baseColumnNames: approved_by_id
+        baseTableName: asset_usage_log
+        constraintName: FKh882mchbakvteuied4ee2b8j2
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: user
+        validate: true
+    - addForeignKeyConstraint:
+        baseColumnNames: asset_usage_log_id
+        baseTableName: asset_usage_log_user
+        constraintName: FK267syc5ytqe0sflqqdvyx15ik
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: asset_usage_log
+        validate: true
+    - addForeignKeyConstraint:
+        baseColumnNames: user_id
+        baseTableName: asset_usage_log_user
+        constraintName: FKpise6tuprj2ilhydjteli6k3k
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: user
+        validate: true

@@ -1,4 +1,4 @@
-package com.cnpmnc.DreamCode.ping;
+package com.cnpmnc.DreamCode.api.ping;
 
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
