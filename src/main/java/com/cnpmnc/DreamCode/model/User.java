@@ -1,14 +1,12 @@
 package com.cnpmnc.DreamCode.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.Data;
 import java.util.List;
 
 @Entity
 @Data
+@Table(name = "users")
 public class User extends BaseEntity {
     private String userName;
     private String password;

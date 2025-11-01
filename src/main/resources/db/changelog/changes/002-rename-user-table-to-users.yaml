@@ -1,0 +1,11 @@
+databaseChangeLog:
+- changeSet:
+    id: 002-rename-user-table-to-users
+    author: liem
+    changes:
+    - renameTable:
+        oldTableName: user
+        newTableName: users
+    - renameSequence:
+        oldSequenceName: user_seq
+        newSequenceName: users_seq
