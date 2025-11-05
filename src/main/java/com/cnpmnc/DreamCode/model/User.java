@@ -17,11 +17,6 @@ public class User extends BaseEntity {
 
     private String password;
 
-    // Store roles as comma-separated string in a single VARCHAR column
-    @Convert(converter = StringListConverter.class)
-    @Column(name = "roles")
-    private List<String> roles;
-
     private String avatarKey;
 
     @ManyToMany(mappedBy = "users")
