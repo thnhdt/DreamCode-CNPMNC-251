@@ -5,3 +5,9 @@ databaseChangeLog:
       file: db/changelog/changes/002-rename-user-table-to-users.yaml
   - include:
       file: db/changelog/changes/003-add-roles-column-users.yaml
+  - include:
+      file: db/changelog/changes/003-category.yaml
+  - include:
+      file: db/changelog/changes/005-mvp-db.yaml
+  - include:
+      file: db/changelog/changes/006-add-category-to-asset.yaml

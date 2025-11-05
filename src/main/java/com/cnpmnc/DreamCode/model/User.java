@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import java.util.List;
 import com.cnpmnc.DreamCode.model.converter.StringListConverter;
+import java.util.Set;
 
 @Entity
 @Data
@@ -20,6 +21,7 @@ public class User extends BaseEntity {
     @Convert(converter = StringListConverter.class)
     @Column(name = "roles")
     private List<String> roles;
+
     private String avatarKey;
 
     @ManyToMany(mappedBy = "users")
@@ -27,4 +29,6 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "approvedBy")
     private List<AssetUsageLog> approvedAssetUsageLogs;
+    @ManyToMany
+    private Set<Role> roles;
 }
