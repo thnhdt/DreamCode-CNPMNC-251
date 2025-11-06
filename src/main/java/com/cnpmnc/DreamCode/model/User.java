@@ -19,11 +19,20 @@ public class User extends BaseEntity {
 
     private String avatarKey;
 
+    @Column(name = "is_active", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private Boolean isActive;
+
     @ManyToMany(mappedBy = "users")
     private List<AssetUsageLog> assetUsageLogs;
 
     @OneToMany(mappedBy = "approvedBy")
     private List<AssetUsageLog> approvedAssetUsageLogs;
-    @ManyToMany
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "roles_id")
+    )
     private Set<Role> roles;
 }

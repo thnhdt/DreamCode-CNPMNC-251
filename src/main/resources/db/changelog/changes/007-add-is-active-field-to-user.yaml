@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1762413562768-1
+      author: khoa
+      changes:
+        - addColumn:
+            columns:
+              - column:
+                  constraints:
+                    nullable: false
+                  defaultValueBoolean: false
+                  name: is_active
+                  type: BOOLEAN
+            tableName: users
+        - addUniqueConstraint:
+            columnNames: user_name
+            constraintName: UC_USERSUSER_NAME_COL
+            tableName: users

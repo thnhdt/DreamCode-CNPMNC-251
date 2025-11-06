@@ -1,11 +1,13 @@
 package com.cnpmnc.DreamCode.security;
 
 import com.cnpmnc.DreamCode.model.User;
+import com.cnpmnc.DreamCode.model.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Set;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,14 +20,15 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-//        List<String> roles = user.getRoles();
-//      mock roles for testing
-        List<String> roles = List.of("ADMIN");
-        if (roles == null)
+        // Lấy roles từ user entity
+        Set<Role> roles = user.getRoles();
+
+        if (roles == null || roles.isEmpty())
             return List.of();
+
+        // lấy role name
         return roles.stream()
-                .map(r -> r.startsWith("ROLE_") ? r : "ROLE_" + r)
-                .map(SimpleGrantedAuthority::new)
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName()))
                 .collect(Collectors.toList());
     }
 
