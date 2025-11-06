@@ -13,6 +13,8 @@ public interface UserMapper {
     User toUser(UserCreationRequest request);
 
     @Mapping(source = "id", target = "id")
+    @Mapping(source = "createdAt", target = "createdAt")
+    @Mapping(source = "updatedAt", target = "updatedAt")
     UserResponse toUserResponse(User user);
 
     @Mapping(target = "roles", ignore = true)

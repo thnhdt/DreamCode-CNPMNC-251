@@ -4,25 +4,28 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserResponse {
+public class SupplierResponse {
     Integer id;
 
-    String userName;
+    String name;
 
-    String avatarKey;
+    String taxCode;
+
+    String description;
+
+    String email;
+
+    String address;
 
     Boolean isActive;
 
     LocalDateTime createdAt;
 
     LocalDateTime updatedAt;
-
-    Set<RoleResponse> roles;
 }

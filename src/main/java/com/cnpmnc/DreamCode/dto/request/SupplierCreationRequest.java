@@ -1,19 +1,23 @@
-package com.cnpmnc.DreamCode.dto.response;
+package com.cnpmnc.DreamCode.dto.request;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PermissionResponse {
-    Integer id;
+public class SupplierCreationRequest {
     String name;
+
+    String taxCode;
+
     String description;
-    LocalDateTime createdAt;
-    LocalDateTime updatedAt;
+
+    String email;
+
+    String address;
+
+    Boolean isActive;
 }
