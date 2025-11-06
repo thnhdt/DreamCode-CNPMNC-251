@@ -3,8 +3,8 @@ package com.cnpmnc.DreamCode.model;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
 import java.util.List;
-import com.cnpmnc.DreamCode.model.converter.StringListConverter;
 import java.util.Set;
 
 @Entity
@@ -19,7 +19,7 @@ public class User extends BaseEntity {
 
     private String avatarKey;
 
-    @Column(name = "is_active", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    @Column(name = "is_active", nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
     private Boolean isActive;
 
     @ManyToOne

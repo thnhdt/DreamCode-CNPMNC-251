@@ -1,0 +1,74 @@
+
+databaseChangeLog:
+  - changeSet:
+      id: 009-create-suppliers-table
+      author: khoa
+      changes:
+        - createTable:
+            tableName: suppliers
+            columns:
+              - column:
+                  name: id
+                  type: INTEGER
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    primaryKeyName: suppliersPK
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP(6) WITHOUT TIME ZONE
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP(6) WITHOUT TIME ZONE
+              - column:
+                  name: address
+                  type: VARCHAR(255)
+              - column:
+                  name: description
+                  type: VARCHAR(255)
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+              - column:
+                  name: is_active
+                  type: BOOLEAN
+                  defaultValueBoolean: true
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: tax_code
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+        - addUniqueConstraint:
+            tableName: suppliers
+            columnNames: name
+            constraintName: UC_SUPPLIERSNAME_COL
+        - addUniqueConstraint:
+            tableName: suppliers
+            columnNames: tax_code
+            constraintName: UC_SUPPLIERSTAX_CODE_COL
+        - addColumn:
+            tableName: asset
+            columns:
+              - column:
+                  name: supplier_id
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: asset
+            baseColumnNames: supplier_id
+            constraintName: FKn6x3hl495exapw1pm0ypi65js
+            referencedTableName: suppliers
+            referencedColumnNames: id
+            deferrable: false
+            initiallyDeferred: false
+            validate: true
+
