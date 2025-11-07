@@ -21,7 +21,6 @@ public class DepartmentController {
     private final UserRepository userRepository;
     private final AssetRepository assetRepository;
     private final AssetRequestRepository requestRepository;
-    private final InventoryCheckRepository inventoryRepository;
     private final DepartmentRepository departmentRepository;
     
     @GetMapping("/health")
@@ -135,54 +134,6 @@ public class DepartmentController {
             return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
         }
     }
-    
-    
-    @GetMapping("/inventory")
-    public ResponseEntity<?> getInventory(
-            Authentication auth,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "50") int size) {
-        try {
-            User user = getUser(auth);
-            Department dept = getManagedDepartment(user);
-            
-            Page<InventoryCheck> checks = inventoryRepository.findByDepartment(dept, PageRequest.of(page, size));
-            Page<InventoryCheckResponse> response = checks.map(DepartmentMapper::toInventoryCheckResponse);
-            
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
-        }
-    }
-    
-    @PutMapping("/inventory/{id}")
-    public ResponseEntity<?> updateInventory(
-            Authentication auth,
-            @PathVariable Integer id,
-            @RequestBody Map<String, String> body) {
-        try {
-            User user = getUser(auth);
-            Department dept = getManagedDepartment(user);
-            
-            InventoryCheck inv = inventoryRepository.findById(id)
-                    .orElseThrow(() -> new IllegalArgumentException("Inventory check not found"));
-            
-            if (!inv.getDepartment().getId().equals(dept.getId())) {
-                return ResponseEntity.status(403).body(Map.of("error", "Not your department's inventory"));
-            }
-            
-            inv.setStatus(body.get("status")); 
-            inv.setNotes(body.get("notes"));
-            inv.setCheckedBy(user);
-            
-            inv = inventoryRepository.save(inv);
-            
-            return ResponseEntity.ok(DepartmentMapper.toInventoryCheckResponse(inv));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-        }
-    }
-    
     
     @GetMapping("/user-requests")
     public ResponseEntity<?> getUserRequests(

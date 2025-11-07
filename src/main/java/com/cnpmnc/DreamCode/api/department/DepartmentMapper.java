@@ -13,12 +13,11 @@ public class DepartmentMapper {
                 .description(asset.getDescription())
                 .purchaseDate(asset.getPurchaseDate())
                 .value(asset.getValue())
+                .status(asset.getStatus())
                 .categoryId(asset.getCategory() != null ? asset.getCategory().getId() : null)
                 .categoryName(asset.getCategory() != null ? asset.getCategory().getName() : null)
                 .supplierId(asset.getSupplier() != null ? asset.getSupplier().getId() : null)
                 .supplierName(asset.getSupplier() != null ? asset.getSupplier().getName() : null)
-                .createdAt(asset.getCreatedAt())
-                .updatedAt(asset.getUpdatedAt())
                 .build();
     }
     
@@ -37,25 +36,6 @@ public class DepartmentMapper {
                 .assetId(request.getAsset() != null ? request.getAsset().getId() : null)
                 .assetName(request.getAsset() != null ? request.getAsset().getName() : null)
                 .createdAt(request.getCreatedAt())
-                .updatedAt(request.getUpdatedAt())
-                .build();
-    }
-    
-    public static InventoryCheckResponse toInventoryCheckResponse(InventoryCheck check) {
-        return InventoryCheckResponse.builder()
-                .id(check.getId())
-                .campaignName(check.getCampaignName())
-                .status(check.getStatus())
-                .notes(check.getNotes())
-                .assetId(check.getAsset() != null ? check.getAsset().getId() : null)
-                .assetName(check.getAsset() != null ? check.getAsset().getName() : null)
-                .assetLocation(check.getAsset() != null ? check.getAsset().getLocation() : null)
-                .departmentId(check.getDepartment() != null ? check.getDepartment().getId() : null)
-                .departmentName(check.getDepartment() != null ? check.getDepartment().getName() : null)
-                .checkedById(check.getCheckedBy() != null ? check.getCheckedBy().getId() : null)
-                .checkedByName(check.getCheckedBy() != null ? check.getCheckedBy().getUserName() : null)
-                .createdAt(check.getCreatedAt())
-                .updatedAt(check.getUpdatedAt())
                 .build();
     }
 }

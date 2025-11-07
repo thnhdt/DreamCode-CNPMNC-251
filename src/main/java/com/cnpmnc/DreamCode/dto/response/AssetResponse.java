@@ -13,6 +13,7 @@ public class AssetResponse {
     private String description;
     private Date purchaseDate;
     private Double value;
+    private String status;
     
     // Thông tin category
     private Integer categoryId;
@@ -21,6 +22,10 @@ public class AssetResponse {
     // Thông tin supplier
     private Integer supplierId;
     private String supplierName;
+    
+    // Thông tin department
+    private Integer departmentId;
+    private String departmentName;
     
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
