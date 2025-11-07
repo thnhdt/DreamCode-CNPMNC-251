@@ -8,9 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.time.LocalDateTime;
-
-
-
 import java.util.Optional;
 
 @Repository
@@ -41,5 +38,9 @@ public interface AssetUsageLogRepository extends JpaRepository<AssetUsageLog, In
         @Param("userId") Integer userId,
         @Param("timestamp") LocalDateTime timestamp
     );
+    
     Optional<AssetUsageLog> findByAssetIdAndEndTimeIsNull(Integer assetId);
+    
+    // Từ nhánh THANG: Lịch sử sử dụng tài sản
+    Page<AssetUsageLog> findByAssetIdOrderByCreatedAtDesc(Integer assetId, Pageable pageable);
 }
