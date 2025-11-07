@@ -1,25 +1,25 @@
 package com.cnpmnc.DreamCode.api.assets;
 
-import com.cnpmnc.DreamCode.constant.AssetStatus;
-import com.cnpmnc.DreamCode.dto.request.AssignAssetRequest;
-import com.cnpmnc.DreamCode.dto.request.RevokeAssetRequest;
-import com.cnpmnc.DreamCode.dto.response.AssignAssetResponse;
-import com.cnpmnc.DreamCode.dto.response.RevokeAssetResponse;
+import com.cnpmnc.DreamCode.model.enumType.AssetStatus;
+import com.cnpmnc.DreamCode.dto.request.*;
+import com.cnpmnc.DreamCode.dto.response.*;
 import com.cnpmnc.DreamCode.mapper.AssignAssetMapper;
-import com.cnpmnc.DreamCode.model.Asset;
-import com.cnpmnc.DreamCode.model.AssetUsageLog;
-import com.cnpmnc.DreamCode.model.User;
-import com.cnpmnc.DreamCode.repository.AssetRepository;
-import com.cnpmnc.DreamCode.repository.AssetUsageLogRepository;
-import com.cnpmnc.DreamCode.repository.UserRepository;
+import com.cnpmnc.DreamCode.model.*;
+import com.cnpmnc.DreamCode.repository.*;
 import com.cnpmnc.DreamCode.security.CustomUserDetails;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,8 +34,12 @@ public class AssetService {
     AssignAssetMapper assignAssetMapper;
     AssetRepository assetRepository;
     UserRepository userRepository;
+    CategoryRepository categoryRepository;
+    DepartmentRepository departmentRepository;
+    SupplierRepository supplierRepository;
 
-
+    // ========== TỪ NHÁNH MAIN: Assign & Revoke ==========
+    
     public AssignAssetResponse assignAsset(AssignAssetRequest request) {
 
         AssetUsageLog assetUsageLog = assignAssetMapper.toAssetUsageLog(request);
@@ -104,7 +108,7 @@ public class AssetService {
                 .id(assetUsageLog.getId())
                 .assetId(asset.getId())
                 .endTime(assetUsageLog.getEndTime())
-                .Status(asset.getStatus())
+                .Status(asset.getStatus().name())
                 .build();
     }
 
@@ -114,5 +118,162 @@ public class AssetService {
         return userDetails.getId();
     }
 
+    // ========== TỪ NHÁNH THANG: CRUD tài sản ==========
+    
+    // 1. Tạo tài sản mới
+    @Transactional
+    public AssetResponse createAsset(AssetCreationRequest request) {
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new IllegalArgumentException("Category not found: " + request.getCategoryId()));
+        
+        Department department = departmentRepository.findById(request.getDepartmentId())
+                .orElseThrow(() -> new IllegalArgumentException("Department not found: " + request.getDepartmentId()));
+
+        Supplier supplier = supplierRepository.findById(request.getSupplierId())
+                .orElseThrow(() -> new IllegalArgumentException("Supplier not found: " + request.getSupplierId()));
+
+        Asset asset = new Asset();
+        asset.setName(request.getName());
+        asset.setLocation(request.getLocation());
+        asset.setDescription(request.getDescription());
+        asset.setImageKeys(request.getImageKeys());
+        asset.setPurchaseDate(request.getPurchaseDate());
+        asset.setValue(request.getValue());
+        asset.setStatus(AssetStatus.IN_STOCK);
+        asset.setCategory(category);
+        asset.setDepartment(department);
+        asset.setSupplier(supplier);
+
+        Asset saved = assetRepository.save(asset);
+        return toAssetResponse(saved);
+    }
+
+    // 2. Danh sách tra cứu tài sản (với tìm kiếm)
+    public Page<AssetResponse> searchAssets(String name, Integer departmentId, Integer categoryId, 
+                                           int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Page<Asset> assets = assetRepository.searchAssets(name, departmentId, categoryId, pageable);
+        return assets.map(this::toAssetResponse);
+    }
+
+    // 3. Lấy chi tiết tài sản
+    public AssetResponse getAsset(Integer id) {
+        Asset asset = assetRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Asset not found: " + id));
+        return toAssetResponse(asset);
+    }
+
+    // 4. Cập nhật tài sản
+    @Transactional
+    public AssetResponse updateAsset(Integer id, AssetUpdateRequest request) {
+        Asset asset = assetRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Asset not found: " + id));
+
+        if (StringUtils.hasText(request.getName())) {
+            asset.setName(request.getName());
+        }
+        if (StringUtils.hasText(request.getLocation())) {
+            asset.setLocation(request.getLocation());
+        }
+        if (request.getDescription() != null) {
+            asset.setDescription(request.getDescription());
+        }
+        if (request.getImageKeys() != null) {
+            asset.setImageKeys(request.getImageKeys());
+        }
+        if (request.getPurchaseDate() != null) {
+            asset.setPurchaseDate(request.getPurchaseDate());
+        }
+        if (request.getValue() != null) {
+            asset.setValue(request.getValue());
+        }
+        if (request.getCategoryId() != null) {
+            Category category = categoryRepository.findById(request.getCategoryId())
+                    .orElseThrow(() -> new IllegalArgumentException("Category not found"));
+            asset.setCategory(category);
+        }
+        if (request.getDepartmentId() != null) {
+            Department department = departmentRepository.findById(request.getDepartmentId())
+                    .orElseThrow(() -> new IllegalArgumentException("Department not found"));
+            asset.setDepartment(department);
+        }
+        if (request.getSupplierId() != null) {
+            Supplier supplier = supplierRepository.findById(request.getSupplierId())
+                    .orElseThrow(() -> new IllegalArgumentException("Supplier not found"));
+            asset.setSupplier(supplier);
+        }
+
+        Asset saved = assetRepository.save(asset);
+        return toAssetResponse(saved);
+    }
+
+    // 5. Xóa tài sản
+    @Transactional
+    public void deleteAsset(Integer id) {
+        if (!assetRepository.existsById(id)) {
+            throw new IllegalArgumentException("Asset not found: " + id);
+        }
+        assetRepository.deleteById(id);
+    }
+
+    // 6. Lấy lịch sử sử dụng tài sản
+    public Page<AssetUsageLogResponse> getAssetUsageLogs(Integer assetId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        Page<AssetUsageLog> logs = assetUsageLogRepository.findByAssetIdOrderByCreatedAtDesc(assetId, pageable);
+        return logs.map(this::toAssetUsageLogResponse);
+    }
+
+    // Helper method: Convert Asset to AssetResponse
+    private AssetResponse toAssetResponse(Asset asset) {
+        return AssetResponse.builder()
+                .id(asset.getId())
+                .name(asset.getName())
+                .location(asset.getLocation())
+                .description(asset.getDescription())
+                .status(asset.getStatus())
+                .imageKeys(asset.getImageKeys())
+                .purchaseDate(asset.getPurchaseDate())
+                .value(asset.getValue())
+                .categoryId(asset.getCategory().getId())
+                .categoryName(asset.getCategory().getName())
+                .category(AssetResponse.CategoryInfo.builder()
+                        .id(asset.getCategory().getId())
+                        .name(asset.getCategory().getName())
+                        .build())
+                .departmentId(asset.getDepartment().getId())
+                .departmentName(asset.getDepartment().getName())
+                .department(AssetResponse.DepartmentInfo.builder()
+                        .id(asset.getDepartment().getId())
+                        .name(asset.getDepartment().getName())
+                        .build())
+                .supplierId(asset.getSupplier().getId())
+                .supplierName(asset.getSupplier().getName())
+                .build();
+    }
+
+    // Helper method: Convert AssetUsageLog to AssetUsageLogResponse
+    private AssetUsageLogResponse toAssetUsageLogResponse(AssetUsageLog log) {
+        return AssetUsageLogResponse.builder()
+                .id(log.getId())
+                .assetId(log.getAsset().getId())
+                .assetName(log.getAsset().getName())
+                .beginTime(log.getBeginTime())
+                .endTime(log.getEndTime())
+                .approvalStatus(log.getApprovalStatus() != null ? log.getApprovalStatus().name() : null)
+                .notes(log.getNotes())
+                .users(log.getUsers().stream()
+                        .map(user -> AssetUsageLogResponse.UserInfo.builder()
+                                .id(user.getId())
+                                .userName(user.getUserName())
+                                .build())
+                        .collect(Collectors.toList()))
+                .approvedBy(log.getApprovedBy() != null ? 
+                        AssetUsageLogResponse.UserInfo.builder()
+                                .id(log.getApprovedBy().getId())
+                                .userName(log.getApprovedBy().getUserName())
+                                .build() : null)
+                .build();
+    }
 
 }
+
