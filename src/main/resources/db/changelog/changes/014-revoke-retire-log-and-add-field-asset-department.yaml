@@ -2,6 +2,11 @@ databaseChangeLog:
 - changeSet:
     id: 1762544745623-1
     author: khoa
+    preConditions:
+      - onFail: MARK_RAN
+      - not:
+          - tableExists:
+              tableName: asset_retire_log
     changes:
     - createTable:
         columns:
