@@ -5,6 +5,9 @@ import com.cnpmnc.DreamCode.dto.request.*;
 import com.cnpmnc.DreamCode.dto.response.DepartmentResponse;
 import com.cnpmnc.DreamCode.dto.response.SupplierResponse;
 import com.cnpmnc.DreamCode.dto.response.UserResponse;
+import com.cnpmnc.DreamCode.mapper.DepartmentMapper;
+import com.cnpmnc.DreamCode.mapper.SupplierMapper;
+import com.cnpmnc.DreamCode.mapper.UserMapper;
 import com.cnpmnc.DreamCode.model.Department;
 import com.cnpmnc.DreamCode.model.Role;
 import com.cnpmnc.DreamCode.model.Supplier;
@@ -37,7 +40,7 @@ public class AdminService {
     UserMapper userMapper;
     SupplierMapper supplierMapper;
     DepartmentMapper departmentMapper;
-    private final SupplierRepository supplierRepository;
+    SupplierRepository supplierRepository;
 
     public UserResponse createUser(UserCreationRequest request) {
 
@@ -185,7 +188,7 @@ public class AdminService {
     public List<DepartmentResponse> getActiveDepartments(int page, int size) {
         return departmentRepository.findAllByIsActiveTrue(PageRequest.of(page, size, Sort.by("id").descending())).stream().map(departmentMapper::toDepartmentResponse).toList();
     }
-    
+
     public DepartmentResponse getDepartment(Integer id) {
         return departmentMapper.toDepartmentResponse(departmentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Department not found with id: " + id)));

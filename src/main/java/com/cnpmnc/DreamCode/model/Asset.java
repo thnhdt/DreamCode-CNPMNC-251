@@ -1,9 +1,7 @@
 package com.cnpmnc.DreamCode.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import com.cnpmnc.DreamCode.model.converter.StringListConverter;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.Date;
@@ -15,7 +13,11 @@ public class Asset extends BaseEntity {
     private String name;
     private String location;
     private String description;
+
+    @Convert(converter = StringListConverter.class)
+    @Column(columnDefinition = "TEXT")
     private List<String> imageKeys;
+    
     private Date purchaseDate;
     private Double value;
 
