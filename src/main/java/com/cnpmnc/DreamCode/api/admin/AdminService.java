@@ -73,6 +73,10 @@ public class AdminService {
         return userRepository.findAll(PageRequest.of(page, size, Sort.by("id").descending())).stream().map(userMapper::toUserResponse).toList();
     }
 
+    public List<UserResponse> getActiveUsers(int page, int size) {
+        return userRepository.findAllByIsActiveTrue(PageRequest.of(page, size, Sort.by("id").descending())).stream().map(userMapper::toUserResponse).toList();
+    }
+
     public UserResponse getUser(Integer id) {
         return userMapper.toUserResponse(userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + id)));
@@ -91,7 +95,7 @@ public class AdminService {
                     .orElseThrow(() -> new IllegalArgumentException("Department with ID " + request.getDepartmentId() + " does not exist."));
             user.setDepartment(department);
         }
-        
+
         if (request.getRoles() != null && !request.getRoles().isEmpty()) {
             // Validate that DEPT_MANAGER role is not in the request
             if (request.getRoles().contains(PredefinedRole.DEPT_MANAGER_ROLE)) {
@@ -118,6 +122,10 @@ public class AdminService {
 
     public List<SupplierResponse> getSuppliers(int page, int size) {
         return supplierRepository.findAll(PageRequest.of(page, size, Sort.by("id").descending())).stream().map(supplierMapper::toSupplierResponse).toList();
+    }
+
+    public List<SupplierResponse> getActiveSuppliers(int page, int size) {
+        return supplierRepository.findAllByIsActiveTrue(PageRequest.of(page, size, Sort.by("id").descending())).stream().map(supplierMapper::toSupplierResponse).toList();
     }
 
     public SupplierResponse getSupplier(Integer id) {
@@ -174,6 +182,10 @@ public class AdminService {
         return departmentRepository.findAll(PageRequest.of(page, size, Sort.by("id").descending())).stream().map(departmentMapper::toDepartmentResponse).toList();
     }
 
+    public List<DepartmentResponse> getActiveDepartments(int page, int size) {
+        return departmentRepository.findAllByIsActiveTrue(PageRequest.of(page, size, Sort.by("id").descending())).stream().map(departmentMapper::toDepartmentResponse).toList();
+    }
+    
     public DepartmentResponse getDepartment(Integer id) {
         return departmentMapper.toDepartmentResponse(departmentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Department not found with id: " + id)));
