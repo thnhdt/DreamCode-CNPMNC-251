@@ -16,17 +16,19 @@ public class Asset extends BaseEntity {
     private String name;
     private String location;
     private String description;
-    
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private AssetStatus status;
-    
+
     @Convert(converter = StringListConverter.class)
     @Column(columnDefinition = "TEXT")
     private List<String> imageKeys;
-    
+
     private Date purchaseDate;
     private Double value;
+
+    private Integer usefulLifeMonths;
 
     @ManyToOne
     @JoinColumn(name = "department_id", nullable = false)
@@ -34,6 +36,12 @@ public class Asset extends BaseEntity {
 
     @OneToMany(mappedBy = "asset")
     private List<AssetUsageLog> usageLogs;
+
+    @OneToMany(mappedBy = "asset")
+    private List<AssetRevokeLog> revokeLogs;
+
+    @OneToMany(mappedBy = "asset")
+    private List<AssetRetireLog> retireLogs;
 
     @OneToMany(mappedBy = "asset")
     private List<AssetMaintenanceLog> maintenanceLogs;

@@ -1,0 +1,40 @@
+databaseChangeLog:
+- changeSet:
+    id: 1762546870880-1
+    author: khoa
+    changes:
+    - addColumn:
+        columns:
+        - column:
+            name: image_keys
+            type: TEXT
+        tableName: asset_accident_log
+    - addColumn:
+        columns:
+        - column:
+            name: reporter_department_name
+            type: VARCHAR(255)
+        tableName: asset_accident_log
+    - addColumn:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: reporter_user_name
+            type: VARCHAR(255)
+        tableName: asset_accident_log
+    - addColumn:
+        columns:
+        - column:
+            name: resolution_notes
+            type: TEXT
+        tableName: asset_accident_log
+    - addColumn:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: status
+            type: VARCHAR(255)
+        tableName: asset_accident_log
+
