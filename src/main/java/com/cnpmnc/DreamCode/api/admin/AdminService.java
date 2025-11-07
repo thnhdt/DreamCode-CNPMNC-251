@@ -54,7 +54,15 @@ public class AdminService {
             roleRepository.findByName(role).ifPresent(roles::add);
         }
 
+
         user.setRoles(roles);
+
+        // Check if the department exists
+        if (request.getDepartmentId() != null) {
+            Department department = departmentRepository.findById(request.getDepartmentId())
+                    .orElseThrow(() -> new IllegalArgumentException("Department with ID " + request.getDepartmentId() + " does not exist."));
+            user.setDepartment(department);
+        }
 
         user = userRepository.save(user);
 
@@ -77,6 +85,13 @@ public class AdminService {
         if (request.getPassword() != null && !request.getPassword().isEmpty()) {
             user.setPassword(passwordEncoder.encode(request.getPassword()));
         }
+
+        if (request.getDepartmentId() != null) {
+            Department department = departmentRepository.findById(request.getDepartmentId())
+                    .orElseThrow(() -> new IllegalArgumentException("Department with ID " + request.getDepartmentId() + " does not exist."));
+            user.setDepartment(department);
+        }
+        
         if (request.getRoles() != null && !request.getRoles().isEmpty()) {
             // Validate that DEPT_MANAGER role is not in the request
             if (request.getRoles().contains(PredefinedRole.DEPT_MANAGER_ROLE)) {
