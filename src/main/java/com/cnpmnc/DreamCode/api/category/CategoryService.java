@@ -58,7 +58,7 @@ public class CategoryService {
         return toResponse(updated);
     }
 
-    public void delete(Integer id) {
+    public void deleteCategory(Integer id) {
         if (!categoryRepository.existsById(id)) {
             throw new IllegalArgumentException("Category not found: " + id);
         }
