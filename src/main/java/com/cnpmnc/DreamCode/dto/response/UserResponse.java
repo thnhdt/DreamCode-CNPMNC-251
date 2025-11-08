@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -30,5 +31,5 @@ public class UserResponse {
 
     DepartmentOfUserResponse department;
 
-    DepartmentOfUserResponse managedDepartment;
+    List<DepartmentOfUserResponse> managedDepartment;
 }

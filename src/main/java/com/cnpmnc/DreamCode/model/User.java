@@ -26,8 +26,8 @@ public class User extends BaseEntity {
     @JoinColumn(name = "department_id")
     private Department department;
 
-    @OneToOne(mappedBy = "manager")
-    private Department managedDepartment;
+    @OneToMany(mappedBy = "manager")
+    private List<Department> managedDepartment;
 
     @ManyToMany(mappedBy = "users")
     private List<AssetUsageLog> assetUsageLogs;

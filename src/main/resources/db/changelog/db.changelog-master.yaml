@@ -29,3 +29,5 @@ databaseChangeLog:
         file: db/changelog/changes/014-revoke-retire-log-and-add-field-asset-department.yaml
   - include:
         file: db/changelog/changes/015-synchronize-db-for-running.yaml
+  - include:
+        file: db/changelog/changes/016-remove-unique-dept-mananger.yaml

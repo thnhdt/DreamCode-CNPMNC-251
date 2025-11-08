@@ -14,8 +14,8 @@ public class Department extends BaseEntity {
     @Column(name = "is_active", nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
     private Boolean isActive = true;
 
-    @OneToOne
-    @JoinColumn(name = "manager_id", unique = true)
+    @ManyToOne
+    @JoinColumn(name = "manager_id")
     private User manager;
 
     @OneToMany(mappedBy = "department")
