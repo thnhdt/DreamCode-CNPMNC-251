@@ -33,6 +33,9 @@ public class AssetCreationRequest {
     @Positive(message = "Value must be positive")
     private Double value;
 
+    @Positive(message = "Useful life months must be positive")
+    private Integer usefulLifeMonths;
+
     @NotNull(message = "Department ID is required")
     private Integer departmentId;
 

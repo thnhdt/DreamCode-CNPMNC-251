@@ -191,6 +191,7 @@ public class AssetService {
         asset.setImageKeys(request.getImageKeys());
         asset.setPurchaseDate(request.getPurchaseDate());
         asset.setValue(request.getValue());
+        asset.setUsefulLifeMonths(request.getUsefulLifeMonths());
         asset.setStatus(AssetStatus.IN_STOCK);
         asset.setCategory(category);
         asset.setDepartment(department);
@@ -238,6 +239,9 @@ public class AssetService {
         }
         if (request.getValue() != null) {
             asset.setValue(request.getValue());
+        }
+        if (request.getUsefulLifeMonths() != null) {
+            asset.setUsefulLifeMonths(request.getUsefulLifeMonths());
         }
         if (request.getCategoryId() != null) {
             Category category = categoryRepository.findById(request.getCategoryId())
@@ -309,6 +313,7 @@ public class AssetService {
                 .imageKeys(asset.getImageKeys())
                 .purchaseDate(asset.getPurchaseDate())
                 .value(asset.getValue())
+                .usefulLifeMonths(asset.getUsefulLifeMonths())
                 .categoryId(asset.getCategory().getId())
                 .categoryName(asset.getCategory().getName())
                 .category(AssetResponse.CategoryInfo.builder()
