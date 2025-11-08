@@ -23,7 +23,9 @@ public class AssetResponse {
     private List<String> imageKeys;
     private Date purchaseDate;
     private Double value;
-
+  
+    private Integer usefulLifeMonths;
+   
     // Thông tin category
     private Integer categoryId;
     private String categoryName;
@@ -45,6 +47,7 @@ public class AssetResponse {
     public void setUsers(List<UserInfo> users) {
         this.users = users;
     }
+
 
     @Data
     @Builder

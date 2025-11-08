@@ -23,6 +23,9 @@ public class AssetUpdateRequest {
     @Positive(message = "Value must be positive")
     private Double value;
     
+    @Positive(message = "Useful life months must be positive")
+    private Integer usefulLifeMonths;
+    
     private Integer departmentId;
     private Integer categoryId;
     private Integer supplierId;
