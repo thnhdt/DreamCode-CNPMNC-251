@@ -10,12 +10,13 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class RevokeAssetResponse {
+public class RetireAssetResponse {
     Integer id;
     Integer assetId;
-    LocalDateTime revokedTime;
-    Integer revokedById;
+    LocalDateTime retiredTime;
+    Integer retiredById;
     String reason;
+    Double salvageValue;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
 }

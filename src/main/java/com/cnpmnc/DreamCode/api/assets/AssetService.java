@@ -1,14 +1,9 @@
 package com.cnpmnc.DreamCode.api.assets;
 
-import com.cnpmnc.DreamCode.dto.request.AssetCreationRequest;
-import com.cnpmnc.DreamCode.dto.request.AssetUpdateRequest;
-import com.cnpmnc.DreamCode.dto.request.AssignAssetRequest;
-import com.cnpmnc.DreamCode.dto.request.RevokeAssetRequest;
-import com.cnpmnc.DreamCode.dto.response.AssetResponse;
-import com.cnpmnc.DreamCode.dto.response.AssetUsageLogResponse;
-import com.cnpmnc.DreamCode.dto.response.AssignAssetResponse;
-import com.cnpmnc.DreamCode.dto.response.RevokeAssetResponse;
+import com.cnpmnc.DreamCode.dto.request.*;
+import com.cnpmnc.DreamCode.dto.response.*;
 import com.cnpmnc.DreamCode.mapper.AssignAssetMapper;
+import com.cnpmnc.DreamCode.mapper.RetireAssetMapper;
 import com.cnpmnc.DreamCode.mapper.RevokeAssetMapper;
 import com.cnpmnc.DreamCode.model.*;
 import com.cnpmnc.DreamCode.model.enumType.AssetStatus;
@@ -40,12 +35,14 @@ public class AssetService {
     AssetUsageLogRepository assetUsageLogRepository;
     AssignAssetMapper assignAssetMapper;
     RevokeAssetMapper revokeAssetMapper;
+    RetireAssetMapper retireAssetMapper;
     AssetRepository assetRepository;
     UserRepository userRepository;
     CategoryRepository categoryRepository;
     DepartmentRepository departmentRepository;
     SupplierRepository supplierRepository;
     AssetRevokeLogRepository assetRevokeLogRepository;
+    AssetRetireLogRepository assetRetiredLogRepository;
 
     // ========== TỪ NHÁNH MAIN: Assign & Revoke ==========
 
@@ -128,6 +125,42 @@ public class AssetService {
         // Map to RevokeAssetResponse
         RevokeAssetResponse response = revokeAssetMapper.toRevokeAssetResponse(assetRevokeLog);
         response.setAssetId(asset.getId());
+        response.setRevokedById(revokedById);
+        return response;
+    }
+
+    @Transactional
+    public RetireAssetResponse retireAsset(RetireAssetRequest request) {
+        // Check if asset exists
+        Asset asset = assetRepository.findById(request.getAssetId())
+                .orElseThrow(() -> new IllegalArgumentException("Asset with ID " + request.getAssetId() + " does not exist."));
+
+        // Check if asset status is IN_STOCK
+        if (!AssetStatus.IN_STOCK.equals(asset.getStatus())) {
+            throw new IllegalArgumentException("Asset with ID " + request.getAssetId() + " is not in stock and cannot be retired.");
+        }
+
+        // Create and set asset retired log
+        AssetRetireLog retiredLog = retireAssetMapper.toAssetRetireLog(request);
+        retiredLog.setAsset(asset);
+        retiredLog.setRetiredTime(request.getRetiredTime() != null ? request.getRetiredTime() : LocalDateTime.now());
+
+        // Retrieve user ID from token
+        Integer retiredById = getCurrentUserId();
+        User retiredBy = userRepository.findById(retiredById)
+                .orElseThrow(() -> new IllegalArgumentException("Retirer not found."));
+        retiredLog.setRetiredBy(retiredBy);
+
+        // Save the retired log
+        assetRetiredLogRepository.save(retiredLog);
+
+        // Update asset status to RETIRED
+        asset.setStatus(AssetStatus.RETIRED);
+        assetRepository.save(asset);
+        RetireAssetResponse response = retireAssetMapper.toRetireAssetResponse(retiredLog);
+        response.setAssetId(asset.getId());
+        response.setRetiredById(retiredById);
+        response.setRetiredTime(retiredLog.getRetiredTime());
         return response;
     }
 

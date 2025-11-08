@@ -1,4 +1,4 @@
-package com.cnpmnc.DreamCode.dto.response;
+package com.cnpmnc.DreamCode.dto.request;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -10,12 +10,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class RevokeAssetResponse {
-    Integer id;
+public class RetireAssetRequest {
     Integer assetId;
-    LocalDateTime revokedTime;
-    Integer revokedById;
+    LocalDateTime retiredTime;
     String reason;
-    LocalDateTime createdAt;
-    LocalDateTime updatedAt;
+    Double salvageValue;
 }
