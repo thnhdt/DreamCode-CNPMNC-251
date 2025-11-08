@@ -39,4 +39,8 @@ public class AssetUsageLog extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "approved_by_id", nullable = false)
     private User approvedBy;
+
+    public List<User> getUsers() {
+        return users;
+    }
 }

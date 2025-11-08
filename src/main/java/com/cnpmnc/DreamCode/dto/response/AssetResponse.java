@@ -1,7 +1,11 @@
 package com.cnpmnc.DreamCode.dto.response;
 
 import com.cnpmnc.DreamCode.model.enumType.AssetStatus;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -19,13 +23,14 @@ public class AssetResponse {
     private List<String> imageKeys;
     private Date purchaseDate;
     private Double value;
+  
     private Integer usefulLifeMonths;
-    
+   
     // Thông tin category
     private Integer categoryId;
     private String categoryName;
     private CategoryInfo category;
-    
+
     // Thông tin supplier
     private Integer supplierId;
     private String supplierName;
@@ -34,6 +39,15 @@ public class AssetResponse {
     private Integer departmentId;
     private String departmentName;
     private DepartmentInfo department;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private List<UserInfo> users;
+
+    public void setUsers(List<UserInfo> users) {
+        this.users = users;
+    }
+
 
     @Data
     @Builder
@@ -51,5 +65,12 @@ public class AssetResponse {
     public static class CategoryInfo {
         private Integer id;
         private String name;
+    }
+
+    @Data
+    @Builder
+    public static class UserInfo {
+        private Integer id;
+        private String userName;
     }
 }

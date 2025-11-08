@@ -209,7 +209,19 @@ public class AssetService {
                                             int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
         Page<Asset> assets = assetRepository.searchAssets(name, departmentId, categoryId, pageable);
-        return assets.map(this::toAssetResponse);
+
+        return assets.map(asset -> {
+            List<User> users = assetUsageLogRepository.findByAssetAndEndTimeIsNull(asset).stream()
+                    .flatMap(log -> log.getUsers().stream())
+                    .collect(Collectors.toList());
+
+            AssetResponse response = toAssetResponse(asset);
+            response.setUsers(users.stream().map(user -> AssetResponse.UserInfo.builder()
+                    .id(user.getId())
+                    .userName(user.getUserName())
+                    .build()).collect(Collectors.toList()));
+            return response;
+        });
     }
 
     // 3. Lấy chi tiết tài sản
